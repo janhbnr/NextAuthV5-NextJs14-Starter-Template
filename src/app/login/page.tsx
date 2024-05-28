@@ -1,25 +1,24 @@
-import { getServerSession } from 'next-auth'
-import React from 'react'
-import { authOptions } from '../../../lib/authOptions';
-import { redirect } from 'next/navigation';
-import RegisterForm from './Form';
-import LoginForm from './Form';
+import React from "react";
+import { redirect } from "next/navigation";
+import RegisterForm from "./Form";
+import LoginForm from "./Form";
+import { auth } from "@/auth";
+import GoogleLoginButton from "@/components/oauth/GoogleLoginButton";
 
 const page = async () => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (session) {
-    redirect("/");
+    redirect("/dashboard");
   }
 
-
   return (
-    <section className='container h-screen flex items-center justify-center'>
-        <div className='w-[800px]'>
-            <LoginForm/>
-        </div>
+    <section className="container flex items-center justify-center py-5">
+      <div>
+        <LoginForm />
+      </div>
     </section>
-  )
-}
+  );
+};
 
-export default page
+export default page;

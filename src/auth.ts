@@ -1,24 +1,18 @@
-import { NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth"
+import GitHub from "next-auth/providers/github";
+import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
+import clientPromise from "./lib/MongodbClient";
+import { MongoDBAdapter } from "@auth/mongodb-adapter"
 
-import GithubProvider from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import clientPromise from "@/lib/MongodbClient";
-
-export const authOptions: NextAuthOptions = {
+export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
     strategy: "jwt",
   },
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    }),
-    CredentialsProvider({
+    GitHub,
+    Google,
+    Credentials({
       name: "Credentials",
       credentials: {
         email: {},
@@ -51,6 +45,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  adapter: MongoDBAdapter(clientPromise),
   callbacks: {
     jwt: async ({ user, token, trigger, session }) => {
       if (trigger === "update") {
@@ -59,4 +54,4 @@ export const authOptions: NextAuthOptions = {
       return { ...token, ...user };
     },
   },
-};
+});

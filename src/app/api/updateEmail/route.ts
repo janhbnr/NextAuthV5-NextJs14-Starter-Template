@@ -1,13 +1,12 @@
+import { auth } from "@/auth";
 import clientPromise from "@/lib/MongodbClient";
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { authOptions } from "../../../../lib/authOptions";
 
 export async function POST(request: Request) {
   const { email } = await request.json();
 
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
 
     if (!session) {
       return NextResponse.json({ error: "Not authorized" }, { status: 400 });

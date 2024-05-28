@@ -12,6 +12,14 @@ export async function POST(request: Request) {
     const client = await clientPromise;
     const db = client.db();
 
+    const doesEmailExist = await db
+    .collection("users")
+    .findOne({ email: email });
+
+    if (doesEmailExist) {
+      return NextResponse.json({ error: "Email already exists" }, { status: 400 })
+    }
+
     const createAccount = await db
       .collection("users")
       .insertOne({ email: email, password: hashedPassword });

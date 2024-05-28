@@ -1,20 +1,18 @@
-import { getServerSession } from 'next-auth'
 import React from 'react'
-import { authOptions } from '../../../lib/authOptions';
 import { redirect } from 'next/navigation';
 import RegisterForm from './Form';
+import { auth } from '@/auth';
 
 const page = async () => {
-  const session = await getServerSession(authOptions);
+  const session = await auth()
 
   if (session) {
     redirect("/");
   }
 
-
   return (
-    <section className='container h-screen flex items-center justify-center'>
-        <div className='w-[800px]'>
+    <section className='container flex items-center justify-center py-12'>
+        <div className='w-[500px]'>
             <RegisterForm/>
         </div>
     </section>

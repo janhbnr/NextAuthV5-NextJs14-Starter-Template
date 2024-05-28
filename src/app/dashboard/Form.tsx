@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { reloadSession } from "@/lib/funcs";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z
@@ -42,6 +43,7 @@ const DashboardForm = ({ email }: { email: string }) => {
   });
 
   const { data: session, update } = useSession();
+  const router = useRouter();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const response = await fetch(`/api/updateEmail`, {
@@ -66,6 +68,7 @@ const DashboardForm = ({ email }: { email: string }) => {
     })
 
     reloadSession();
+    router.refresh();
 
     toast.success("Email changed!");
   }
